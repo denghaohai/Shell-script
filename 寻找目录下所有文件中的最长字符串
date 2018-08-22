@@ -1,0 +1,87 @@
+maxlen=0
+
+maxfile=''
+
+max=''
+
+maxfile()
+
+{
+
+    words=cat $1 | tr -s -c "a-zA-Z" "\n"  #除了字母和\n其他都压缩。管道
+
+    for i in $words;
+
+    do
+
+        temp=echo -n $i | wc -c#求字符串长度
+
+        if [[ $temp -gt $maxlen ]];
+
+        then
+
+            maxlen=$temp
+
+            max=$i
+
+            maxfile=$1
+
+        fi
+
+    done
+
+}
+
+maxdir()
+
+{
+
+    for i in ls $1;#递归
+
+    do
+
+        if [[ -d $1/$i  ]];#如果为目录则调用maxdir
+
+        then
+
+            maxdir $1/$i 
+
+        else
+
+            maxfile $1/$i #如果为文件则调用maxfile
+
+        fi
+
+    done
+
+}
+
+for i in $@;
+
+do
+
+if [[ -f $i ]];
+
+then
+
+    if [[ -x $i ]];#如果可执行则不搜索，应为可执行文件为二进制乱码
+
+    then
+
+        break
+
+    fi
+
+     maxfile $i
+
+elif [[ -d $i ]];
+
+then
+
+    maxdir $i
+
+fi
+
+done
+
+printf "The max String is %s, \n which has %d letters, \n in the %s" $max $maxlen $maxfile
