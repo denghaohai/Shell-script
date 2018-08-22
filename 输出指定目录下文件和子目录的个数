@@ -1,0 +1,27 @@
+#!/bin/bash
+sum=0
+sum1=0
+read -p "path:" path
+find_gs()
+{
+    ((sum1=$sum1+1))
+}
+find_zgs()
+{
+   for i in `ls -a $1`;
+   do
+       if [[ "$i" == "." || "$i" == ".." ]];then
+           continue
+       fi
+           if [[ -d $1/$i ]];
+           then 
+               (( sum++ ))
+           find_zgs $1/$i
+   else
+       find_gs $1/$i 
+   fi 
+   done
+}
+find_zgs $path
+echo $sum
+echo $sum1
